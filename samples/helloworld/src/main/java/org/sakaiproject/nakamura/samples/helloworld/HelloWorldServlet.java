@@ -21,7 +21,9 @@ package org.sakaiproject.nakamura.samples.helloworld;
 
 import org.apache.felix.scr.annotations.Properties;
 import org.apache.felix.scr.annotations.Property;
+import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.sling.SlingServlet;
+import org.sakaiproject.nakamura.samples.api.helloworld.SpeakingClockService;
 
 import java.io.IOException;
 
@@ -45,6 +47,8 @@ public class HelloWorldServlet extends HttpServlet {
    */
   private static final long serialVersionUID = -2002186252317448037L;
 
+  @Reference
+  private SpeakingClockService speakingClockService;
   /**
    * {@inheritDoc}
    * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
@@ -52,7 +56,7 @@ public class HelloWorldServlet extends HttpServlet {
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
-    resp.getWriter().write("Hello World from Sling/Nakamura/Osgi");
+    resp.getWriter().write("Hello World from Sling/Nakamura/Osgi the speaking clock says :"+speakingClockService.whatsTheTime());
   }
 
 }
