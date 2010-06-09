@@ -23,6 +23,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.sakaiproject.nakamura.samples.api.helloworld.SpeakingClockService;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -41,6 +42,8 @@ public class HelloWorldServletTest {
   private HttpServletRequest req;
   @Mock
   private HttpServletResponse resp;
+  @Mock
+  private SpeakingClockService speakingClockService;
   
   /**
    * 
@@ -55,10 +58,12 @@ public class HelloWorldServletTest {
     
     StringWriter sw = new StringWriter();
     Mockito.when(resp.getWriter()).thenReturn(new PrintWriter(sw));
+    helloWorldServlet.speakingClockService = speakingClockService;
     
+    Mockito.when(speakingClockService.whatsTheTime()).thenReturn("its always then to three");
     helloWorldServlet.doGet(req, resp);
     
-    Assert.assertEquals("Hello World from Sling/Nakamura/Osgi", sw.toString());
+    Assert.assertEquals("Hello World from Sling/Nakamura/Osgi the speaking clock says :its always then to three", sw.toString());
   }
   
 }

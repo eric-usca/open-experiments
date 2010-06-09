@@ -47,8 +47,8 @@ public class HelloWorldServlet extends HttpServlet {
    */
   private static final long serialVersionUID = -2002186252317448037L;
 
-  @Reference
-  private SpeakingClockService speakingClockService;
+  @Reference 
+  protected SpeakingClockService speakingClockService;
   /**
    * {@inheritDoc}
    * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
