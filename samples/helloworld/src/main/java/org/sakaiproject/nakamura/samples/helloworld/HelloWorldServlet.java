@@ -1,10 +1,3 @@
-package org.sakaiproject.nakamura.samples.helloworld;
-
-
-import java.io.IOException;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 /*
  * Licensed to the Sakai Foundation (SF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -22,21 +15,30 @@ import javax.servlet.http.HttpServlet;
  * KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
+
+package org.sakaiproject.nakamura.samples.helloworld;
+
+
+import org.apache.felix.scr.annotations.Properties;
+import org.apache.felix.scr.annotations.Property;
+import org.apache.felix.scr.annotations.sling.SlingServlet;
+
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
  * The <code>HelloWorldServlet</code> says Hello World
- * 
- * @scr.component metatype="no"
- * @scr.service interface="javax.servlet.Servlet"
- * @scr.property name="service.description" value="Hello World Servlet"
- * @scr.property name="service.vendor" value="The Sakai Foundation"
- * @scr.property name="sling.servlet.resourceTypes" values.0="sling/helloworld"
- * @scr.property name="sling.servlet.paths" value="/system/sling/helloworld"
- * @scr.property name="sling.servlet.methods" values.0="GET" 
  */
 
+@SlingServlet(methods={"GET"}, paths={"/system/sling/helloworld"}, extensions={"json"})
+@Properties(value={
+    @Property(name="service.description", value="Hello World Servlet"),
+    @Property(name="service.vendor", value="The Sakai Foundation")
+})
 public class HelloWorldServlet extends HttpServlet {
   /**
    *
@@ -50,7 +52,7 @@ public class HelloWorldServlet extends HttpServlet {
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
-    resp.getWriter().write("Hello World from Sling/K2/Osgi");
+    resp.getWriter().write("Hello World from Sling/Nakamura/Osgi");
   }
 
 }
