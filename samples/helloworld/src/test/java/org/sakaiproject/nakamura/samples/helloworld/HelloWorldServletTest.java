@@ -60,10 +60,10 @@ public class HelloWorldServletTest {
     Mockito.when(resp.getWriter()).thenReturn(new PrintWriter(sw));
     helloWorldServlet.speakingClockService = speakingClockService;
     
-    Mockito.when(speakingClockService.whatsTheTime()).thenReturn("its always then to three");
+    Mockito.when(speakingClockService.whatsTheTime()).thenReturn("its always ten to three");
     helloWorldServlet.doGet(req, resp);
     
-    Assert.assertEquals("Hello World from Sling/Nakamura/Osgi the speaking clock says :its always then to three", sw.toString());
+    Assert.assertEquals("Hello World from Sling/Nakamura/Osgi the speaking clock says :its always ten to three", sw.toString());
   }
   
 }
