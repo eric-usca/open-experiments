@@ -36,7 +36,7 @@ import javax.servlet.http.HttpServletResponse;
  * The <code>HelloWorldServlet</code> says Hello World
  */
 
-@SlingServlet(methods={"GET"}, paths={"/system/sling/helloworld"}, extensions={"json"})
+@SlingServlet(methods={"GET"}, resourceTypes={"sakai/helloworld"}, extensions={"json"})
 @Properties(value={
     @Property(name="service.description", value="Hello World Servlet"),
     @Property(name="service.vendor", value="The Sakai Foundation")
