@@ -19,6 +19,11 @@ package org.sakaiproject.nakamura.samples.helloworld;
 
 import junit.framework.Assert;
 
+import org.apache.sling.api.SlingHttpServletRequest;
+import org.apache.sling.api.SlingHttpServletResponse;
+import org.apache.sling.api.resource.Resource;
+import org.apache.sling.commons.json.JSONException;
+import org.apache.sling.commons.json.JSONObject;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -29,9 +34,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  *
@@ -39,11 +44,15 @@ import javax.servlet.http.HttpServletResponse;
 public class HelloWorldServletTest {
 
   @Mock
-  private HttpServletRequest req;
+  private SlingHttpServletRequest req;
   @Mock
-  private HttpServletResponse resp;
+  private SlingHttpServletResponse resp;
   @Mock
   private SpeakingClockService speakingClockService;
+  @Mock
+  private Resource resource;
+  @Mock
+  private Node node;
   
   /**
    * 
@@ -53,17 +62,25 @@ public class HelloWorldServletTest {
   }
 
   @Test
-  public void testDoGet() throws ServletException, IOException {
+  public void testDoGet() throws ServletException, IOException, RepositoryException, JSONException {
     HelloWorldServlet helloWorldServlet = new HelloWorldServlet();
     
     StringWriter sw = new StringWriter();
     Mockito.when(resp.getWriter()).thenReturn(new PrintWriter(sw));
     helloWorldServlet.speakingClockService = speakingClockService;
     
+    Mockito.when(req.getResource()).thenReturn(resource);
+    Mockito.when(resource.adaptTo(Node.class)).thenReturn(node);
+    Mockito.when(node.getPath()).thenReturn("/testinpath");
+    
     Mockito.when(speakingClockService.whatsTheTime()).thenReturn("its always ten to three");
     helloWorldServlet.doGet(req, resp);
     
-    Assert.assertEquals("Hello World from Sling/Nakamura/Osgi the speaking clock says :its always ten to three", sw.toString());
+    String s = sw.toString();
+    Assert.assertNotNull(s);
+    JSONObject o = new JSONObject(s);
+    Assert.assertEquals("/testinpath", o.get("nodepath"));
+    Assert.assertEquals("Hello World from Sling/Nakamura/Osgi the speaking clock says :its always ten to three", o.get("message"));
   }
   
 }

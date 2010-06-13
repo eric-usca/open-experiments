@@ -23,14 +23,19 @@ import org.apache.felix.scr.annotations.Properties;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.sling.SlingServlet;
+import org.apache.sling.api.SlingHttpServletRequest;
+import org.apache.sling.api.SlingHttpServletResponse;
+import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
+import org.apache.sling.commons.json.JSONException;
+import org.apache.sling.commons.json.io.JSONWriter;
 import org.sakaiproject.nakamura.samples.api.helloworld.SpeakingClockService;
 
 import java.io.IOException;
 
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * The <code>HelloWorldServlet</code> says Hello World
@@ -41,7 +46,13 @@ import javax.servlet.http.HttpServletResponse;
     @Property(name="service.description", value="Hello World Servlet"),
     @Property(name="service.vendor", value="The Sakai Foundation")
 })
-public class HelloWorldServlet extends HttpServlet {
+public class HelloWorldServlet extends SlingSafeMethodsServlet {
+  
+  /**
+   * 
+   */
+  public HelloWorldServlet() {
+  }
   /**
    *
    */
@@ -53,10 +64,30 @@ public class HelloWorldServlet extends HttpServlet {
    * {@inheritDoc}
    * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
    */
+  /**
+   * {@inheritDoc}
+   * @see org.apache.sling.api.servlets.SlingSafeMethodsServlet#doGet(org.apache.sling.api.SlingHttpServletRequest, org.apache.sling.api.SlingHttpServletResponse)
+   */
+
   @Override
-  protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+  protected void doGet(SlingHttpServletRequest req, SlingHttpServletResponse resp)
       throws ServletException, IOException {
-    resp.getWriter().write("Hello World from Sling/Nakamura/Osgi the speaking clock says :"+speakingClockService.whatsTheTime());
+    Resource resource = req.getResource();
+    Node node = resource.adaptTo(Node.class);
+    JSONWriter jsonWriter = new JSONWriter(resp.getWriter());
+    try {
+      jsonWriter.object();
+      jsonWriter.key("nodepath");
+      jsonWriter.value(node.getPath());
+      jsonWriter.key("message");
+      jsonWriter.value("Hello World from Sling/Nakamura/Osgi the speaking clock says :"
+          + speakingClockService.whatsTheTime());
+      jsonWriter.endObject();
+    } catch (JSONException e) {
+      e.printStackTrace();
+    } catch (RepositoryException e) {
+      e.printStackTrace();
+    }
   }
 
 }
